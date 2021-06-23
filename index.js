@@ -6,6 +6,7 @@ var passport = require('passport');
 var Strategy = require('passport-local');
 var crypto = require('crypto');
 const User = require('./models/users');
+const initialDb = require('./utils/initial');
 
 const server = express();
 
@@ -15,9 +16,10 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() =>
-    console.log(`Server connected to mongoDB with params: ${config.mongoURI}`)
-  )
+  .then(() => {
+    initialDb();
+    console.log(`Server connected to mongoDB with params: ${config.mongoURI}`);
+  })
   .catch((err) => console.log('Problem with mongoDB', err));
 
 const expressSession = require('express-session')({
@@ -77,6 +79,10 @@ passport.deserializeUser(function (user, cb) {
 });
 
 const authRoutes = require('./routes/auth');
+const basketRoutes = require('./routes/basket');
+const productRoutes = require('./routes/products');
 server.use('/v1/auth', authRoutes);
+server.use('/v1/baskets', basketRoutes);
+server.use('/v1/products', productRoutes);
 
 server.listen(config.port, () => console.log(`api started at ${config.port}`));

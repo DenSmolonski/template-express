@@ -1,25 +1,25 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const productInfo = new Schema({
+const productInfo = {
   product: {
     type: Schema.Types.ObjectId,
-    ref: "producs",
+    ref: 'products',
   },
-  colour: {
+  color: {
     type: Schema.Types.ObjectId,
-    ref: "colours",
+    ref: 'colors',
   },
   size: {
     type: Schema.Types.ObjectId,
-    ref: "sizes",
+    ref: 'sizes',
   },
   count: {
     type: Number,
     required: true,
   },
-});
+};
 
 const basketSchema = new Schema({
   id: {
@@ -29,12 +29,12 @@ const basketSchema = new Schema({
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: "users",
+    ref: 'users',
   },
   products: {
     type: [productInfo],
   },
 });
 
-const Baskets = mongoose.model("baskets", basketSchema);
+const Baskets = mongoose.model('baskets', basketSchema);
 module.exports = Baskets;
