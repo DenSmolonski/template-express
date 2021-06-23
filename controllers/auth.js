@@ -1,13 +1,14 @@
-const User = require('./../models/users');
-const passport = require('passport');
-const crypto = require('crypto');
+const User = require("./../models/users");
+const passport = require("passport");
+const crypto = require("crypto");
+const { v4: uuid4 } = require("uuid");
 
 module.exports.register = async function (req, res) {
   const user = await User.findOne({ username: req.body.username });
   try {
     if (user) {
       res.status(409).json({
-        message: 'USER ALREDY REGISTRED, TRY REGISTER WITH ANOTHER USERNAME',
+        message: "USER ALREDY REGISTRED, TRY REGISTER WITH ANOTHER USERNAME",
       });
       return;
     }
@@ -17,13 +18,14 @@ module.exports.register = async function (req, res) {
       salt,
       10000,
       32,
-      'sha256',
+      "sha256",
       async (err, hashedPassword) => {
         if (err) {
           return next(err);
         }
 
         await new User({
+          id: uuid4(),
           username: req.body.username,
           password: hashedPassword,
           salt,
@@ -40,14 +42,14 @@ module.exports.register = async function (req, res) {
 };
 
 module.exports.login = async function (req, res, next) {
-  passport.authenticate('local', (err, user, info) => {
+  passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
     }
 
     if (!user) {
       res.status(404).json({
-        message: 'User don not exist',
+        message: "User don not exist",
       });
     }
 
